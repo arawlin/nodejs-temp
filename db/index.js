@@ -1,9 +1,12 @@
-require('dotenv').config()
 const { MongoClient, ObjectId } = require('mongodb')
 
 let db
 
-const connect = async () => {
+const connect = async (initPost) => {
+  if (db) {
+    return
+  }
+
   const uriDB = process.env.uriDB
   const nmDB = process.env.nmDB
 
@@ -11,6 +14,8 @@ const connect = async () => {
   // auto close connection when app finished
   await client.connect()
   db = client.db(nmDB)
+
+  initPost && (await initPost())
 }
 
 const sanitize = (params) => {
@@ -31,6 +36,16 @@ const sanitizeStr = (params) => {
     params = JSON.parse(params)
   }
   return sanitize(params)
+}
+
+const listIndexes = async (coll) => {
+  const res = await db.collection(coll).listIndexes().toArray()
+  console.log(res)
+  return res
+}
+
+const createIndexes = async (coll, idxs, opts) => {
+  return await db.collection(coll).createIndexes(idxs, opts)
 }
 
 const insert = async (coll, m) => {
@@ -119,6 +134,9 @@ module.exports = {
   connect,
   sanitize,
   sanitizeStr,
+
+  listIndexes,
+  createIndexes,
 
   insert,
   updateOne,
