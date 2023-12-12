@@ -2,7 +2,7 @@ const db = require('./index')
 const dbTemp = require('./dbTemp')
 
 const main = async () => {
-  await db.createIndexes(dbTemp.NAME_COLL, dbTemp.indexs)
+  await dbTemp.init()
 }
 
 module.exports = main

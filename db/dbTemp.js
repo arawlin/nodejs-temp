@@ -1,6 +1,5 @@
 const db = require('./index')
-
-const NAME_COLL = 'temp'
+const DBBase = require('./dBBase')
 
 /*
 metadata: {
@@ -8,7 +7,8 @@ metadata: {
 }
 */
 
-const indexs = [
+const NAME_COLL = 'temp'
+const INDEXES = [
   {
     key: { aa: 1 },
   },
@@ -21,17 +21,10 @@ const indexs = [
   },
 ]
 
-const find = async (fitler, options) => {
-  return await db.find(NAME_COLL, fitler, options)
+class DBTemp extends DBBase {
+  constructor(nmColl, indexes) {
+    super(nmColl, indexes)
+  }
 }
 
-const count = async (filter) => {
-  return await db.countDocuments(NAME_COLL, filter)
-}
-module.exports = {
-  NAME_COLL,
-  indexs,
-
-  find,
-  count,
-}
+module.exports = new DBTemp(NAME_COLL, INDEXES)

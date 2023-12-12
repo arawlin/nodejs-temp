@@ -38,6 +38,10 @@ const sanitizeStr = (params) => {
   return sanitize(params)
 }
 
+const ObjectIdWrapped = (id) => {
+  return ObjectId(id)
+}
+
 const listIndexes = async (coll) => {
   const res = await db.collection(coll).listIndexes().toArray()
   console.log(res)
@@ -46,6 +50,10 @@ const listIndexes = async (coll) => {
 
 const createIndexes = async (coll, idxs, opts) => {
   return await db.collection(coll).createIndexes(idxs, opts)
+}
+
+const createView = async (view, coll, pipeline, collation) => {
+  return await db.command({ create: view, viewOn: coll, pipeline, collation })
 }
 
 const insert = async (coll, m) => {
@@ -135,8 +143,12 @@ module.exports = {
   sanitize,
   sanitizeStr,
 
+  ObjectIdWrapped,
+
   listIndexes,
   createIndexes,
+
+  createView,
 
   insert,
   updateOne,
