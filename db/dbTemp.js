@@ -1,5 +1,5 @@
 const db = require('./index')
-const DBBase = require('./dBBase')
+const DBBase = require('./dbBase')
 
 /*
 metadata: {
