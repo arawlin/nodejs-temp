@@ -1,7 +1,7 @@
 require('dotenv').config()
 const WS = require('../lib/websocket')
 require('../lib/logger').init('websocket-test')
-const log = require('../lib/logger')
+const log = require('../lib/logger').getLogger()
 
 let count = 0
 let disconnected = false

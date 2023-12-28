@@ -1,3 +1,5 @@
+require('dotenv').config()
+
 const Pulsar = require('pulsar-client')
 
 const logger = require('../lib/logger')
