@@ -13,7 +13,9 @@
       "runtimeExecutable": "node",
       "runtimeArgs": [],
       "program": "${workspaceFolder}/index.js",
-      "args": []
+      "args": [],
+      "outputCapture": "std",
+      "internalConsoleOptions": "neverOpen"
     }
   ]
 }
