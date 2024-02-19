@@ -5,13 +5,26 @@ const interval = {
   runImmediately: true,
 }
 const options = {
-  id: 'task toad temp',
   preventOverrun: true,
 }
 
-const task = new AsyncTask('task toad', async () => {
-  // https://www.npmjs.com/package/toad-scheduler
-  console.log('toad', new Date())
-})
+const name = 'task-toad'
 
-module.exports = new SimpleIntervalJob(interval, task, options)
+const task = new SimpleIntervalJob(
+  interval,
+  new AsyncTask(name, async () => {
+    logger.debug(name)
+    try {
+      // https://www.npmjs.com/package/toad-scheduler
+      console.log('toad', new Date())
+    } catch (e) {
+      logger.error(e)
+    }
+  }),
+  options,
+)
+
+module.exports = {
+  name,
+  task,
+}

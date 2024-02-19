@@ -4,9 +4,13 @@ const { ToadScheduler } = require('toad-scheduler')
 const taskSchedule = require('./taskScheduleTemp')
 const taskToad = require('./taskToadTemp')
 
-const init = () => {
+const init = (nmTask) => {
   const schedulerToad = new ToadScheduler()
-  schedulerToad.addSimpleIntervalJob(taskToad)
+  switch (nmTask) {
+    case taskToad.name:
+      schedulerToad.addSimpleIntervalJob(taskToad.task)
+      break
+  }
 
   schedule.scheduleJob(taskSchedule.cron, taskSchedule.task)
 }

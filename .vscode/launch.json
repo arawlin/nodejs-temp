@@ -16,6 +16,19 @@
       "args": [],
       "outputCapture": "std",
       "internalConsoleOptions": "neverOpen"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "runTask",
+      "skipFiles": ["<node_internals>/**"],
+      "outFiles": ["${workspaceFolder}/**/*.js"],
+      "runtimeExecutable": "node",
+      "runtimeArgs": [],
+      "program": "${workspaceFolder}/scripts/runTask.js",
+      "args": ["task-toad"],
+      "outputCapture": "std",
+      "internalConsoleOptions": "neverOpen"
     }
   ]
 }
