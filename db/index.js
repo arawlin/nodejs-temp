@@ -1,5 +1,6 @@
 const { MongoClient, ObjectId } = require('mongodb')
 
+let client
 let db
 
 const connect = async (initPost) => {
@@ -7,13 +8,13 @@ const connect = async (initPost) => {
     return
   }
 
-  const uriDB = process.env.uriDB
-  const nmDB = process.env.nmDB
+  const dbURI = process.env.DB_URI
+  const dbName = process.env.DB_NAME
 
-  const client = new MongoClient(uriDB)
+  client = new MongoClient(dbURI)
   // auto close connection when app finished
   await client.connect()
-  db = client.db(nmDB)
+  db = client.db(dbName)
 
   initPost && (await initPost())
 }
@@ -56,13 +57,32 @@ const createView = async (view, coll, pipeline, collation) => {
   return await db.command({ create: view, viewOn: coll, pipeline, collation })
 }
 
-const insert = async (coll, m) => {
-  const res = await db.collection(coll).insertOne(m)
+const DEFAULT_TRANSACTION_OPTIONS = {
+  readPreference: 'primary',
+  readConcern: { level: 'majority' },
+  writeConcern: { w: 'majority' },
+}
+
+const withTransaction = async (tx, options) => {
+  const session = client.startSession()
+  try {
+    await session.withTransaction(tx(session), options ?? DEFAULT_TRANSACTION_OPTIONS)
+  } finally {
+    await session.endSession()
+  }
+}
+
+const insert = async (coll, m, options) => {
+  const res = await db.collection(coll).insertOne(m, options)
   return res && res.insertedId
 }
 
-const updateOne = async (coll, filter, m) => {
-  const res = await db.collection(coll).updateOne(filter, { $set: m }, { upsert: true })
+const updateOneRaw = async (coll, filter, update, options) => {
+  return await db.collection(coll).updateOne(filter, update, options)
+}
+
+const updateOne = async (coll, filter, m, options = { upsert: true }) => {
+  const res = await updateOneRaw(coll, filter, { $set: m }, options)
   if (!(res && res.acknowledged)) {
     throw 'update error - ' + coll
   }
@@ -147,10 +167,12 @@ module.exports = {
 
   listIndexes,
   createIndexes,
-
   createView,
 
+  withTransaction,
+
   insert,
+  updateOneRaw,
   updateOne,
   updateMany,
   bulkWrite,
