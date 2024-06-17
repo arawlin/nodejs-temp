@@ -28,6 +28,10 @@ class DBBase {
   async count(filter) {
     return await db.countDocuments(this.nmColl, filter)
   }
+
+  async bulkWrite(opers) {
+    return await db.bulkWrite(this.nmColl, opers)
+  }
 }
 
 module.exports = DBBase
